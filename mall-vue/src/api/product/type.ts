@@ -1,7 +1,12 @@
 import { pageType } from '../baseType'
+
+// 根据商品名模糊,商品分类id分页查询
 export interface productSearchRequest extends pageType {
-    productName: string;
+    productName?: string;
+    categoryId?: number;
 }
+
+
 
 // 商品属性
 export interface productParameterType {
@@ -9,13 +14,21 @@ export interface productParameterType {
     propertyValueValue: string;
 }
 
-// 商品图片
-export interface   ProductImage {
-    productImageId: number;
-    productImageProductId: number;
+// 商品购物车信息
+export interface ProductCartInfoVO{
+    categoryId: number;
+    categoryName: string
+    productId: number;
     productImageSrc: string;
-    productImageType: number;
+    productName: string;
+    productOrderItemId: number;
+    productOrderItemNumber: number;
+    productOrderItemPrice: number;
+    productSalePrice: number;
 }
+
+
+
 
 // 商品详情
 export interface productDetailsType {

@@ -11,42 +11,31 @@
     <div class="content">
       <div class="contentMain"></div>
       <div class="loginDiv">
-        <div :class="[isPwdLogin?'loginSwitch':'loginSwitch_two']" id="loginSwitch" @click="changeLoginTyp()"></div>
-
-        <div class="loginMessage">
-          <div class="loginMessageMain">
-            <div class="poptip-arrow"><em></em><span></span></div>
-            <img
-              src="../../assets/images/fore/WebsiteImage/scan-safe.png"
-            /><span>扫码登录更安全</span>
-          </div>
-        </div>
-
+        <!--   密码登录     -->
         <div class="pwdLogin">
-          <span class="loginTitle">密码登录</span>
+          <span class="loginTitle">找回密码</span>
           <el-form class="loginForm">
             <el-form-item class="loginInputDiv">
               <el-input
-                :prefix-icon="User"
-                type="text"
-                v-model="loginForm.userName"
-                placeholder="会员名/邮箱/手机号"
+                  :prefix-icon="User"
+                  type="text"
+                  v-model="resetForm.userName"
+                  placeholder="用户名"
               />
             </el-form-item>
             <el-form-item class="loginInputDiv">
               <el-input
-                :prefix-icon="Lock"
-                type="password"
-                placeholder="密码输入"
-                show-password
-                v-model="loginForm.userPassword"
+                  :prefix-icon="PhoneFilled"
+                  type="text"
+                  placeholder="手机号"
+                  v-model="resetForm.mobile"
               />
             </el-form-item>
           </el-form>
           <!-- 登录按钮 -->
-          <button class="loginButton" @click="OnSubmit()">登录</button>
+          <button class="loginButton" @click="OnSubmit()">开始找回</button>
           <div class="loginLinks">
-            <router-link to="/resetPwd">忘记密码</router-link>
+            <router-link to="/login">返回登录</router-link>
             <router-link to="/register">免费注册</router-link>
           </div>
           <div class="error_message">
@@ -54,33 +43,6 @@
           </div>
         </div>
 
-        <div class="qrcodeLogin">
-          <span class="loginTitle">手机扫码，安全登录</span>
-          <div class="qrcodeMain">
-            <img
-              src="../../assets/images/fore/WebsiteImage/login_qrcode.png"
-              id="qrcodeA"
-            />
-            <img
-              src="../../assets/images/fore/WebsiteImage/login_qrcodeB.png"
-              id="qrcodeB"
-            />
-          </div>
-          <div class="qrcodeFooter">
-            <img src="../../assets/images/fore/WebsiteImage/scan_icon2.png" />
-            <p>
-              打开
-              <a href="https://www.mall.com/wow/portal/act/app-download"
-                >手机Mall</a
-              >
-              <br />扫一扫登录
-            </p>
-          </div>
-          <div class="loginLinks">
-            <a href="JavaScript:void(0)" id="pwdLogin">密码登录</a>
-            <a href="#">免费注册</a>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -89,52 +51,52 @@
       <div class="footer">
         <p>
           <a
-            href="http://pages.mall.com/wow/seller/act/zhaoshangproduce"
-            target="_blank"
-            >关于我们</a
+              href="http://pages.mall.com/wow/seller/act/zhaoshangproduce"
+              target="_blank"
+          >关于我们</a
           >
           <a
-            href="http://service.mall.com/support/mall/tmallHelp.htm"
-            target="_blank"
-            >帮助中心</a
+              href="http://service.mall.com/support/mall/tmallHelp.htm"
+              target="_blank"
+          >帮助中心</a
           >
           <a href="http://open.taobao.com" target="_blank">开放平台</a>
           <a href="http://job.alibaba.com/zhaopin/index.htm" target="_blank"
-            >诚聘英才</a
+          >诚聘英才</a
           >
           <a href="http://consumerservice.taobao.com/contact-us" target="_blank"
-            >联系我们</a
+          >联系我们</a
           >
           <a href="http://xtao.mall.com?tracelog=tmallfoot" target="_blank"
-            >网站合作</a
+          >网站合作</a
           >
           <a
-            href="http://terms.alicdn.com/legal-agreement/terms/suit_bu1_taobao/suit_bu1_taobao201703241622_61002.html"
-            target="_blank"
-            >法律声明及隐私权政策</a
+              href="http://terms.alicdn.com/legal-agreement/terms/suit_bu1_taobao/suit_bu1_taobao201703241622_61002.html"
+              target="_blank"
+          >法律声明及隐私权政策</a
           >
           <a href="http://ipp.alibabagroup.com/" target="_blank">知识产权</a>
           <a
-            href="http://jubao.alibaba.com/index.html?site=mall"
-            target="_blank"
-            >廉正举报</a
+              href="http://jubao.alibaba.com/index.html?site=mall"
+              target="_blank"
+          >廉正举报</a
           >
           <a
-            href="http://rule.mall.com/trulecycle.htm"
-            target="_blank"
-            class="noneStyle"
-            >规则意见征集</a
+              href="http://rule.mall.com/trulecycle.htm"
+              target="_blank"
+              class="noneStyle"
+          >规则意见征集</a
           >
         </p>
         <p class="footertwo">
           <a href="http://www.alibabagroup.com/cn/global/home" target="_blank"
-            >阿里巴巴集团</a
+          >阿里巴巴集团</a
           >
           <a href="http://www.taobao.com" target="_blank">Mall商城</a>
           <a href="http://ju.taobao.com/" target="_blank">聚划算</a>
           <a href="http://www.aliexpress.com/" target="_blank">全球速卖通</a>
           <a href="http://www.alibaba.com/" target="_blank"
-            >阿里巴巴国际交易市场</a
+          >阿里巴巴国际交易市场</a
           >
           <a href="http://www.1688.com/" target="_blank">1688</a>
           <a href="http://www.alimama.com/" target="_blank">阿里妈妈</a>
@@ -150,39 +112,39 @@
           <a href="http://www.mallnet.com" target="_blank">Mall星球</a>
           <a href="http://www.laiwang.com/" target="_blank">来往</a>
           <a
-            href="http://www.dingtalk.com/?lwfrom=20150205115110773"
-            target="_blank"
-            >钉钉</a
+              href="http://www.dingtalk.com/?lwfrom=20150205115110773"
+              target="_blank"
+          >钉钉</a
           >
           <a href="https://www.alipay.com" target="_blank">支付宝</a>
         </p>
         <div class="copyright">
           增值电信业务经营许可证：
           <a
-            href="http://www.miibeian.gov.cn/state/outPortal/loginPortal.action"
-            target="_blank"
-            >浙B2-20110446</a
+              href="http://www.miibeian.gov.cn/state/outPortal/loginPortal.action"
+              target="_blank"
+          >浙B2-20110446</a
           >
           网络文化经营许可证：
           <a
-            href="http://sq.ccm.gov.cn/ccnt/sczr/service/business/emark/toDetail/CB964ABC7B904B7BA3472DDF700A2D6D"
-            target="_blank"
-            >浙网文[2015]0295-065号</a
+              href="http://sq.ccm.gov.cn/ccnt/sczr/service/business/emark/toDetail/CB964ABC7B904B7BA3472DDF700A2D6D"
+              target="_blank"
+          >浙网文[2015]0295-065号</a
           >
           <a href="http://jb.ccm.gov.cn/" target="_blank">12318举报</a>
           <br />
           互联网药品信息服务资质证书编号：
           <a
-            href="http://img.alicdn.com/tps/TB1vi6vPVXXXXbVXVXXXXXXXXXX-927-653.png"
-            target="_blank"
-            >浙-（经营性）-2017-0005</a
+              href="http://img.alicdn.com/tps/TB1vi6vPVXXXXbVXVXXXXXXXXXX-927-653.png"
+              target="_blank"
+          >浙-（经营性）-2017-0005</a
           >
           <a
-            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010002000120"
-            target="_blank"
+              href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010002000120"
+              target="_blank"
           >
             <img
-              src="../../assets/images/fore/WebsiteImage/TB1yEqRPXXXXXXPXpXXXXXXXXXX-20-20.png"
+                src="../../assets/images/fore/WebsiteImage/TB1yEqRPXXXXXXPXpXXXXXXXXXX-20-20.png"
             />
             浙公网安备 33010002000120号
           </a>
@@ -195,50 +157,37 @@
 </template>
 
 <script setup lang="ts">
-import { Lock, User } from "@element-plus/icons-vue";
-import { ElMessage } from "element-plus";
-import { useUserStore } from "../../store/modules/user";
-const UserStore = useUserStore();
-
+import { PhoneFilled, User } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
-import {LoginParams} from "../../api/user/types";
+import {resetFormVO} from "../../api/user/types";
+import {findPassword} from "../../api/user";
+import {ElMessageBox} from "element-plus";
 const router = useRouter();
 
-const loginForm = ref<LoginParams>({
-  userName: "",
-  userPassword: "",
-});
-const isPwdLogin = ref<boolean>(true)
-const loginPwdDisplay =  ref<string>('block')
-const loginCodeDisplay = ref<string>('none')
 
-// 登录方式改变
-const changeLoginTyp  = ()=>{
-  if(isPwdLogin.value){
-    loginPwdDisplay.value = "none"
-    loginCodeDisplay.value = "block"
-  }else{
-    loginPwdDisplay.value = "block"
-    loginCodeDisplay.value = "none"
-  }
-  isPwdLogin.value = !isPwdLogin.value
-}
+
+const resetForm = ref<resetFormVO>({
+  mobile: "",
+  userName: ""
+});
+
+
+
 // 提交
 const OnSubmit = () => {
-  console.log("登录数据：" + loginForm.value);
-  UserStore.login(loginForm.value)
-    .then((res) => {
-      if (res.code === 0) {
-        ElMessage.success("登录成功");
-        UserStore.getInfo();
-        router.replace("/mall");
-      } else {
-        ElMessage.error("登录失败" + res.message);
-      }
-    })
-    .catch((e) => {
-      ElMessage.error(e.message);
-    });
+  findPassword(resetForm.value).then(res=>{
+    if(res.code===0){
+      ElMessageBox({
+        title: '信息提示',
+        message: h('p', null, [
+          h('span', null, '信息:'),
+          h('i', { style: 'color: teal' }, res.data)
+        ]),
+      })
+    }else{
+      ElMessage.error(res.message)
+    }
+  })
 };
 </script>
 
@@ -446,7 +395,6 @@ const OnSubmit = () => {
 }
 
 .loginDiv > .pwdLogin {
-  display: v-bind(loginPwdDisplay);
   padding: 25px 26px 20px;
 }
 
@@ -541,7 +489,7 @@ const OnSubmit = () => {
 }
 
 .loginDiv > .qrcodeLogin {
-  display: v-bind(loginCodeDisplay);
+  display: none;
   padding: 25px 26px 20px;
 }
 

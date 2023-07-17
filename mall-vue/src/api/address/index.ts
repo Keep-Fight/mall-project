@@ -6,4 +6,4 @@ enum URL {
 }
 
 export const getAddressApi = async (addressAreaId: any) => get(URL.getAddress, { addressAreaId: addressAreaId })
-export const getProvinceApi = async (p?: string) => get(URL.getProvince, undefined)
+export const getProvinceApi = async () => get(URL.getProvince, undefined)

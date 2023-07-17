@@ -2,13 +2,12 @@
 /**
  * 登录参数
  */
-// @ts-ignore
-interface LoginParams {
+export interface LoginParams {
     userName: string;
     userPassword: string;
 }
 
-interface UserVO {
+export interface UserVO {
     userName?: string;
     userAddress?: string;
     userBirthday: string;
@@ -20,7 +19,7 @@ interface UserVO {
     userProvince?: string;
 }
 
-interface UserRegisterDTO {
+export interface UserRegisterDTO {
     confirmPassword: string;
     userAddress: number;
     userBirthday: string;
@@ -32,13 +31,18 @@ interface UserRegisterDTO {
 }
 
 // 用户更新请求
-interface UpdateUserDTO extends UserVO {
+export interface UpdateUserDTO extends UserVO {
     confirmPassword: string;
     userPassword: string;
 }
 
 
-interface AddressDTO {
+export interface AddressDTO {
     addressAreaId: string;
     addressName: string;
+}
+
+export interface resetFormVO{
+    mobile: string;
+    userName: string;
 }

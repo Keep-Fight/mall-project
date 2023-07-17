@@ -1,4 +1,3 @@
-import { ProductImage } from '../product/type'
 
 // 分类
 export interface categoryType {

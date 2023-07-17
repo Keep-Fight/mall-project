@@ -48,7 +48,42 @@ const routes: Array<RouteRecordRaw> = [
                 name: 'ProductInfo',
                 component: () => import('../views/Product/components/info.vue')
             },
+            // 提交订单页面
+            {
+                path: 'order/buy',
+                name: 'OrderBuy',
+                component: () => import('../views/Order/components/OrderBuy.vue')
+            },
+            // 确认收货的页面
+            {
+                path: 'order/confirm/:id',
+                name: 'OrderConfirm',
+                component: () => import('../views/Order/components/OrderConfirm.vue')
+            },
+            // 商品付款页面
+            {
+                path: 'order/pay/:id',
+                name: 'OrderPay',
+                component: () => import('../views/Order/components/OrderPay.vue')
+            },
+
+            // 商品评论页面
+            {
+                path: 'order/review/:orderItemId/:productId',
+                name: 'OrderReview',
+                component: () => import('../views/Order/components/OrderReview.vue')
+            },
+
+
+
+
         ]
+    },
+    // 重置密码
+    {
+        path: '/resetPwd',
+        name: 'ResetPwd',
+        component: () => import('../views/ResetPwd/index.vue')
     },
     {
         path: '/register',

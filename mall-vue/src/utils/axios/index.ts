@@ -17,7 +17,9 @@ const axiosInstance: AxiosInstance = axios.create({
 // axiosInstance
 
 // axios 请求拦截器
+
 axiosInstance.interceptors.request.use(
+    // @ts-ignore
     (config: AxiosRequestConfig) => {
         const token = getToken()
         if (token != null && token != "") {

@@ -213,7 +213,7 @@ userStore.getInfo().then((res) => {
 
 // 获得省列表
 const provinceAddressOptions = ref<any>();
-getProvinceApi("").then((res) => {
+getProvinceApi().then((res) => {
   if (res.code == 0) {
     provinceAddressOptions.value = res.data;
   }

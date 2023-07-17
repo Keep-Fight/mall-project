@@ -1,26 +1,24 @@
 <template>
   <div>
     <!-- 购物车搜索栏 -->
-    <Search title="购物车" :isShowLi="false" :isShowSearch="true" />
+    <Search title="购物车" :isShowLi="false" :isShowSearch="true"/>
 
     <div class="content">
-
-
 
       <div id="J_FilterBar">
         <ul id="J_CartSwitch">
           <li>
             <router-link to="/cart" class="J_MakePoint">
               <em>全部商品</em>
-              <span class="number">2</span>
+              <span class="number">{{cartProductInfoList.length}}</span>
             </router-link>
           </li>
         </ul>
         <div class="cart-sum">
           <span class="pay-text">已选商品（不含运费）</span>
           <strong class="price"><em id="J_SmallTotal"><span
-              class="total-symbol">&nbsp;</span>0.00</em></strong>
-          <a id="J_SmallSubmit" class="submit-btn submit-btn-disabled">结&nbsp;算</a>
+              class="total-symbol">&nbsp;</span>{{ (cartTotalMoney).toFixed(2) }}</em></strong>
+          <a id="J_SmallSubmit" :class="['submit-btn',cartTotalMoney===0?'submit-btn-disabled':'']">结&nbsp;算</a>
         </div>
         <div class="wrap-line">
           <div class="floater"></div>
@@ -29,8 +27,10 @@
       <table id="J_CartMain">
         <thead>
         <tr>
-          <th class="selectAll_th"><input type="checkbox" class="cbx_select" id="cbx_select_all"><label
-              for="cbx_select_all">全选</label></th>
+          <th class="selectAll_th">
+            <el-checkbox v-model="isAllSelect" :label="isAllSelect?'取消':'全选'"
+                         @click="isAllSelect?doSelect(-1):doSelect(1)"/>
+          </th>
           <th width="474px" class="productInfo_th"><span>商品信息</span></th>
           <th width="120px"><span>单价</span></th>
           <th width="120px"><span>数量</span></th>
@@ -40,133 +40,71 @@
         </tr>
         </thead>
         <tbody>
+        <div class="orderItem-div" v-for="(cart,index) in cartProductInfoList" :key="cart.productId">
+          <tr class="orderItem_category">
+            <td colspan="6"><span></span><span
+                class="category_shop">店铺：贤趣{{ cart.categoryName }}旗舰店</span>
+            </td>
+          </tr>
+          <tr class="orderItem_info">
+            <td class="tbody_checkbox">
+              <el-checkbox v-model="cartSelectList[index]" @change="doSelect(0)"/>
+            </td>
 
-        <tr class="orderItem_category">
-          <td colspan="6"><span ></span><span
-              class="category_shop">店铺：贤趣女装 /大衣旗舰店</span>
-          </td>
-        </tr>
-        <tr class="orderItem_info">
-          <td class="tbody_checkbox"><input type="checkbox" class="cbx_select"
-                                            id="cbx_orderItem_select_285"
-                                            name="orderItem_id"><label
-              for="cbx_orderItem_select_285"></label></td>
-          <td><img class="orderItem_product_image"
-                   src="static/images/item/productSinglePicture/e95d4a9d-ebe9-4f12-975b-2e94e98aa2ef.jpg"
-                   style="width: 80px;height: 80px;"/><span class="orderItem_product_name"><a
-              href="/mall/product/1">2018春装新款韩版潮学生宽松薄款卫衣女长袖ins超火的上衣服外套</a></span>
-          </td>
-          <td><span
-              class="orderItem_product_price">￥79.0</span>
-          </td>
-          <td>
-            <div class="item_amount">
-              <a href="javascript:void(0)" onclick="up(this)"
-                 class="J_Minus no_minus">-</a>
-              <input type="text" value="1"/>
-              <a href="javascript:void(0)" onclick="down(this)" class="J_Plus">+</a>
-            </div>
-          </td>
-          <td>
-            <span class="orderItem_product_realPrice">￥79.0</span>
-          </td>
-          <td><a href="javascript:void(0)" onclick="removeItem('285')"
-                 class="remove_order">删除</a></td>
-          <td>
-            <input type="hidden" class="input_orderItem" name="285"/>
-          </td>
-        </tr>
+            <td><img class="orderItem_product_image"
+                     :src="bindImg(cart.productImageSrc)"
+                     style="width: 80px;height: 80px;"/><span class="orderItem_product_name"><router-link
+                :to="'/product/info/'+cart.productId">{{ cart.productName }}</router-link></span>
+            </td>
+            <td><span
+                class="orderItem_product_price">￥{{ cart.productSalePrice}}</span>
+            </td>
+            <td>
+              <div class="item_amount">
+                <a href="javascript:void(0)" @click="down(index)"
+                   class="J_Minus">-</a>
+                <input type="text" v-model="cart.productOrderItemNumber"/>
+                <a href="javascript:void(0)" @click="up(index)" class="J_Plus">+</a>
+              </div>
+            </td>
+            <td>
+              <span
+                  class="orderItem_product_realPrice">￥{{ (cart.productOrderItemPrice).toFixed(2) }}</span>
+            </td>
+            <td><a href="javascript:void(0)" @click="doDeleteCartItem(cart.productOrderItemId)"
+                   class="remove_order">删除</a></td>
+          </tr>
+        </div>
 
-        <tr class="orderItem_category">
-          <td colspan="6"><span ></span><span
-              class="category_shop">店铺：贤趣女装 /大衣旗舰店</span>
-          </td>
-        </tr>
-        <tr class="orderItem_info">
-          <td class="tbody_checkbox"><input type="checkbox" class="cbx_select"
-                                            id="cbx_orderItem_select_286"
-                                            name="orderItem_id"><label
-              for="cbx_orderItem_select_286"></label></td>
-          <td><img class="orderItem_product_image"
-                   src="static/images/item/productSinglePicture/10064111-027b-4b72-8ec8-5fde13ef7615.jpg"
-                   style="width: 80px;height: 80px;"/><span class="orderItem_product_name"><a
-              href="/mall/product/21">2018新款运动服套装女装潮韩版时尚春秋季大码衣服休闲卫衣两件套</a></span>
-          </td>
-          <td><span
-              class="orderItem_product_price">￥139.0</span>
-          </td>
-          <td>
-            <div class="item_amount">
-              <a href="javascript:void(0)" onclick="up(this)"
-                 class="J_Minus no_minus">-</a>
-              <input type="text" value="1"/>
-              <a href="javascript:void(0)" onclick="down(this)" class="J_Plus">+</a>
-            </div>
-          </td>
-          <td>
-            <span class="orderItem_product_realPrice">￥139.0</span>
-          </td>
-          <td><a href="javascript:void(0)" onclick="removeItem('286')"
-                 class="remove_order">删除</a></td>
-          <td>
-            <input type="hidden" class="input_orderItem" name="286"/>
-          </td>
-        </tr>
 
         </tbody>
+
       </table>
       <div id="J_FloatBar">
-        <div id="J_SelectAll2">
-          <div class="cart_checkbox">
-            <input class="J_checkboxShop" id="J_SelectAllCbx2" type="checkbox" value="true"/>
-            <label for="J_SelectAllCbx2" title="勾选购物车内所有商品"></label>
-          </div>
-          <span class="span_selectAll">&nbsp;全选</span>
-        </div>
         <div class="operations">
-          <a href="javascript:void(0)" onclick="remove()">删除</a>
+          <a href="javascript:void(0)" @click="doDeleteCartItem(undefined)">删除已选商品</a>
         </div>
         <div class="float-bar-right">
           <div id="J_ShowSelectedItems">
             <span class="txt">已选商品</span>
-            <em id="J_SelectedItemsCount">0</em>
+            <em id="J_SelectedItemsCount">{{ selectNumber }}</em>
             <span class="txt">件</span>
           </div>
           <div class="price_sum">
             <span class="txt">合计（不含运费）:</span>
             <strong class="price">
               <em id="J_Total">
-                <span class="total_symbol">&nbsp;  ￥</span>
-                <span class="total_value"> 0.00</span>
+                <span class="total_symbol">{{ (cartTotalMoney).toFixed(2) }}￥</span>
+                <span class="total_value"> </span>
               </em>
             </strong>
           </div>
           <div class="btn_area">
-            <a href="javascript:void(0)" id="J_Go" onclick="create(this)">
+            <a href="javascript:void(0)" id="J_Go" :class="cartTotalMoney===0?'':'selected'" @click="doBuyProduct()">
               <span>结&nbsp;算</span>
             </a>
           </div>
         </div>
-      </div>
-
-
-    </div>
-
-    <div class="modal fade" id="modalDiv" tabindex="-1" role="dialog" aria-labelledby="modalDiv" aria-hidden="true"
-         data-backdrop="static">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title" id="myModalLabel">提示</h4>
-          </div>
-          <div class="modal-body">您确定要取消该宝贝吗？</div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" id="btn-ok">确定</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" id="btn-close">关闭</button>
-            <input type="hidden" id="order_id_hidden">
-          </div>
-        </div>
-
       </div>
 
     </div>
@@ -174,9 +112,167 @@
 </template>
 
 <script setup lang="ts">
+import {deleteCartItemApi, getMyCartApi, updateCartItemApi} from "../../api/cart";
+import {ProductCartInfoVO} from "../../api/product/type";
+import {bindImg} from "../../utils";
+import {ElMessageBox} from "element-plus";
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+// 购物车信息列表
+const cartProductInfoList = ref<ProductCartInfoVO[]>([])
+
+
+
+// 结算购物车
+const doBuyProduct = ()=>{
+  if(cartTotalMoney.value<=0) return;
+  const productOrderItemIdList:number[] = [];
+
+  for (let i = 0; i < cartSelectList.value.length; i++) {
+    if (cartSelectList.value[i] === true) {
+      productOrderItemIdList.push(cartProductInfoList.value[i].productOrderItemId);
+    }
+  }
+  router.push({
+    path: '/order/buy',
+    query: {list:productOrderItemIdList.toString()}
+  })
+
+
+}
+
+
+// 获得购物车
+const doGetCartItemList = () => {
+  getMyCartApi().then(res => {
+    if (res.code === 0) {
+      cartProductInfoList.value = res.data;
+      cartSelectList.value = []
+      for (let i = 0; i < cartProductInfoList.value.length; i++) {
+        cartSelectList.value.push(false);
+      }
+      console.log(cartProductInfoList.value)
+    }
+  })
+}
+
+// 购物车选择列表
+const cartSelectList = ref<boolean[]>([])
+const isAllSelect = ref<boolean>(false)
+const selectNumber = ref<number>(0)
+
+// 选择购物车商品的总钱数
+const cartTotalMoney = ref<number>(0)
+
+// 选择 type=> 1-all全选  -1-取消全选  0-正常的选取
+const doSelect = (type: number) => {
+  if (type === 0) {
+
+  } else if (type === 1) {
+    for (let i = 0; i < cartSelectList.value.length; i++) {
+      cartSelectList.value[i] = true;
+    }
+  } else if (type === -1) {
+    for (let i = 0; i < cartSelectList.value.length; i++) {
+      cartSelectList.value[i] = false;
+    }
+  }
+  refreshData()
+
+}
+
+// 刷新选择的数量和总金额
+const refreshData = ()=>{
+  let money = 0;
+  let number = 0;
+  for (let i = 0; i < cartSelectList.value.length; i++) {
+    if (cartSelectList.value[i] === true) {
+      number++;
+      money = money + cartProductInfoList.value[i].productOrderItemPrice
+    }
+  }
+  selectNumber.value = number;
+  cartTotalMoney.value = money;
+}
+
+// 删除购物车
+const doDeleteCartItem = (productOrderItemId: number) => {
+  ElMessageBox.confirm(
+      '确定要执行删除操作吗?',
+      '删除提示',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+  )
+      .then(() => {
+        const productOrderItemIdList: number[] = [];
+        if (productOrderItemId != undefined) {
+          productOrderItemIdList.push(productOrderItemId)
+        } else {
+          for (let i = 0; i < cartSelectList.value.length; i++) {
+            if (cartSelectList.value[i] === true) {
+              productOrderItemIdList.push(cartProductInfoList.value[i].productOrderItemId)
+            }
+          }
+        }
+        console.log(productOrderItemIdList.toString())
+        deleteCartItemApi(productOrderItemIdList.toString()).then(res => {
+          if (res.code === 0) {
+            ElMessage.success("删除成功")
+            doGetCartItemList()
+            refreshData()
+          } else {
+            ElMessage.error("删除失败")
+          }
+        })
+      })
+
+}
+
+// 更新购物车
+const doUpdateCart = async (orderItemId: number, productOrderItemNumber: number) => {
+  await updateCartItemApi(orderItemId, productOrderItemNumber).then(res => {
+    if (res.code !== 0) {
+      ElMessage.error("更新数据失败")
+    }
+  })
+}
+
+// 添加商品数量
+const up = (index: number) => {
+  if (cartProductInfoList.value && index < cartProductInfoList.value.length) {
+    cartProductInfoList.value[index].productOrderItemNumber++;
+    doUpdateCart(cartProductInfoList.value[index].productOrderItemId, cartProductInfoList.value[index].productOrderItemNumber);
+  }
+  refreshData()
+}
+// 减少商品数量
+const down = (index: number) => {
+  if (cartProductInfoList.value
+      && index < cartProductInfoList.value.length
+      && cartProductInfoList.value[index].productOrderItemNumber > 1) {
+    cartProductInfoList.value[index].productOrderItemNumber--;
+    doUpdateCart(cartProductInfoList.value[index].productOrderItemId, cartProductInfoList.value[index].productOrderItemNumber);
+  }
+  refreshData()
+}
+
+
+// 页面加载初始化
+onMounted(() => {
+  doGetCartItemList()
+})
 
 </script>
 
+<style scoped>
+.orderItem-div {
+  display: contents;
+}
+</style>
 <!--主体样式-->
 <style lang="scss" scoped>
 .content {

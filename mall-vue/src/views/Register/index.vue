@@ -269,8 +269,9 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import {register } from "../../api/user";
+import { register } from "../../api/user";
 import { useRouter } from "vue-router";
+import { getAddressApi } from "../../api/address";
 const router = useRouter();
 
 interface AddressType {
@@ -281,6 +282,7 @@ interface AddressDTO {
   addressAreaId: number;
   addressName: string;
 }
+
 // 省
 const provinceAddressOptions = ref<AddressType[]>([
   { value: 110000, label: "北京" },
@@ -320,7 +322,7 @@ const provinceAddressOptions = ref<AddressType[]>([
 ]);
 // 获得市一级列表
 const proChange = () => {
-  getAddress(proAddress.value).then((res) => {
+  getAddressApi(proAddress.value).then((res) => {
     console.log(res);
     if (res.code === 0) {
       cityAddressOptions.value = res.data;
@@ -334,7 +336,7 @@ const proChange = () => {
 const cityAddressOptions = ref<AddressDTO[]>([]);
 // 获得区一级列表
 const cityChange = () => {
-  getAddress(ruleForm.value.userAddress).then((res) => {
+  getAddressApi(ruleForm.value.userAddress).then((res) => {
     console.log(res);
     if (res.code === 0) {
       regionAddressOptions.value = res.data;

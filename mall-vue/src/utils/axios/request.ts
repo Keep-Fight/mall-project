@@ -23,7 +23,7 @@ const request = <T = any>(config: AxiosRequestConfig): Promise<T> => {
 const post = <D = any>(Url: string, Data: D) => {
     const query: AxiosRequestConfig = {
         url: Url,
-        method: 'post',
+        method: 'POST',
         data: { ...Data },
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
@@ -33,6 +33,18 @@ const post = <D = any>(Url: string, Data: D) => {
     return request(query);
 }
 
+const postByParams = <P = any>(Url: string, Params: P) => {
+    const query: AxiosRequestConfig = {
+        url: Url,
+        method: 'POST',
+        params: { ...Params },
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'request-ajax': true,
+        }
+    }
+    return request(query);
+}
 
 /**
  * get请求
@@ -45,7 +57,7 @@ const get = <P = any>(Url: string, Params: P) => {
 
     const query: AxiosRequestConfig = {
         url: Url,
-        method: 'get',
+        method: 'GET',
         params: { ...Params },
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
@@ -54,6 +66,41 @@ const get = <P = any>(Url: string, Params: P) => {
     }
     return request(query);
 }
+
+const getHtml = <P = any>(Url: string, Params: P) => {
+
+    const query: AxiosRequestConfig = {
+        url: Url,
+        method: 'GET',
+        params: { ...Params },
+        headers: {
+            'Content-Type': 'text/html;charset=UTF-8',
+            'request-ajax': true,
+        }
+    }
+    return request(query);
+}
+
+/**
+ * delete请求
+ * @param Url
+ * @param Params
+ */
+const DELETE = <P = any>(Url: string, Params: P) => {
+
+    const query: AxiosRequestConfig = {
+        url: Url,
+        method: 'delete',
+        params: { ...Params },
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'request-ajax': true,
+        }
+    }
+    return request(query);
+}
+
+
 
 /**
  * 下载资源（图片，视频）
@@ -94,4 +141,5 @@ const upload = (Url: string, File: any) => {
     return axiosInstance(query)
 }
 
-export { get, post, download, upload }
+
+export { get, post, download, upload , DELETE,postByParams,getHtml}

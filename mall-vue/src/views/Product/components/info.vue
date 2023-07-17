@@ -44,20 +44,18 @@
 
     <nav></nav>
 
-
     <!-- 商品图片信息 -->
     <div class="context">
       <div class="context_left">
-         <ImgToBig :img="bindImg(showProductImage)" />
+        <!-- 放大主图 -->
+        <ImgToBig :img="bindImg(showProductImage)" />
 
         <!-- 可放大图列表-->
         <ul class="context_img_ul">
           <li
             :class="[
               'context_img_li',
-              showProductImage === simg
-                ? 'context_img_li_hover'
-                : '',
+              showProductImage === simg ? 'context_img_li_hover' : '',
             ]"
             v-for="simg in productDetails?.singleProductImageList"
             :key="simg"
@@ -123,24 +121,34 @@
             <span class="amount-btn">
               <img
                 src="../../../assets/images/fore/WebsiteImage/up.png"
-                class="amount_value_up"
                 @click="addProductNumber"
               />
               <img
                 src="../../../assets/images/fore/WebsiteImage/down.png"
-                class="amount_value-down"
+                width="18"
                 @click="reduceProductNumber"
               />
             </span>
+
             <span class="amount_unit">件</span>
-            <em>库存{{ 1000 }}件</em>
+            <em>库存{{ 5000-productDetails?.totalSales  }}件</em>
           </dd>
         </dl>
         <div class="context_buy">
-          <form method="get" class="context_buy_form">
-            <input class="context_buyNow" type="submit" value="立即购买" />
-            <input class="context_addBuyCar" type="submit" value="加入购物车" />
-          </form>
+          <div method="get" class="context_buy_form">
+            <input
+              class="context_buyNow"
+              type="submit"
+              value="立即购买"
+              @click="OnOrderBuy()"
+            />
+            <input
+              class="context_addBuyCar"
+              type="submit"
+              value="加入购物车"
+              @click="OnAddToCart()"
+            />
+          </div>
         </div>
         <div class="context_clear">
           <span>服务承诺</span>
@@ -154,11 +162,20 @@
     <div class="mainwrap">
       <div class="J_TabBarBox">
         <ul>
-          <li :class="['J_GoodsDetails',isShowJ_Details?'tab-selected':'']" @click="isShowJ_Details=true">
+          <li
+            :class="['J_GoodsDetails', isShowJ_Details ? 'tab-selected' : '']"
+            @click="isShowJ_Details = true"
+          >
             <a href="javascript:void(0)" class="detailsClick">商品详情</a>
           </li>
 
-          <li :class="['J_GoodsReviews',isShowJ_Details===false?'tab-selected':'']" @click="isShowJ_Details=false">
+          <li
+            :class="[
+              'J_GoodsReviews',
+              isShowJ_Details === false ? 'tab-selected' : '',
+            ]"
+            @click="isShowJ_Details = false"
+          >
             <a href="javascript:void(0)"
               >累计评价<span>{{ productDetails?.reviewCount }}</span></a
             >
@@ -167,9 +184,8 @@
       </div>
 
       <div class="J_choose">
-
         <!--   商品数量   -->
-        <div class="J_details" v-show="isShowJ_Details" >
+        <div class="J_details" v-show="isShowJ_Details">
           <div class="J_details_list">
             <p class="J_details_list_header">
               产品名称：<span>{{ productDetails?.productName }}</span>
@@ -179,41 +195,48 @@
             <p class="J_details_list_title">产品参数：</p>
             <ul class="J_details_list_body">
               <li
-                :title="productParameter.propertyName"
+                :title="productParameter.propertyValueValue"
                 v-for="productParameter in productDetails?.productParameterList"
                 :key="productParameter.propertyName"
               >
-                {{ productParameter.propertyValueValue }}
+                {{
+                  productParameter.propertyName +
+                  "：" +
+                  productParameter.propertyValueValue
+                }}
               </li>
             </ul>
           </div>
         </div>
         <!--   商品评论   -->
-        <div class="J_reviews" v-show="!isShowJ_Details" >
+        <div class="J_reviews" v-show="!isShowJ_Details">
           <div class="J_reviews_main">
-
             <!-- 评论信息单项列表 -->
-            <div class="reviews_info" v-for=" rp in reviewPeopleList" :key="rp.reviewCreatedate">
+            <div
+              class="reviews_info"
+              v-for="rp in reviewPeopleList"
+              :key="rp.reviewCreatedate"
+            >
               <div class="reviews_main">
                 <div class="reviews_content">
                   <p>
-                    {{ rp.reviewContent}}
+                    {{ rp.reviewContent }}
                   </p>
                 </div>
                 <div class="reviews_date">
-                  <span>{{rp.reviewCreatedate}}</span>
+                  <span>{{ rp.reviewCreatedate }}</span>
                 </div>
               </div>
-              <div class="reviews_author">{{rp.userNickName}}</div>
+              <div class="reviews_author">{{ rp.userNickName }}</div>
             </div>
 
-
-
             <el-pagination
-                :hide-on-single-page="(reviewCount<=reviewPeoplePage.pageSize)"
-                :total="reviewCount"
-                layout="prev, pager, next"
-                :page-size="reviewPeoplePage.pageSize"
+              :hide-on-single-page="reviewCount <= reviewPeoplePage.pageSize"
+              :total="reviewCount"
+              v-model:current-page="reviewPeoplePage.current"
+              layout="prev, pager, next"
+              v-model:page-size="reviewPeoplePage.pageSize"
+              @current-change="doGetReviewPeopleList()"
             />
           </div>
         </div>
@@ -228,33 +251,36 @@
         />
       </div>
     </div>
-
-    <div class="msg">
-      <span>商品已添加</span>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useRoute } from "vue-router";
+
+import { useRoute, useRouter } from "vue-router";
 import { bindImg } from "../../../utils";
-import {ref} from 'vue'
+import { ref } from "vue";
 import { getDetailedProductApi } from "../../../api/product";
 import { productDetailsType } from "../../../api/product/type";
-import ImgToBig from "./img-part-to-big.vue"
-import {pageReviewType, reviewPeople} from "../../../api/review/type";
-import {getPageReviewByProductIdApi} from "../../../api/review";
+// @ts-ignore
+import ImgToBig from "./img-part-to-big.vue";
+import { pageReviewType, reviewPeople } from "../../../api/review/type";
+import { getPageReviewByProductIdApi } from "../../../api/review";
+import {addCartItemApi} from "../../../api/cart";
+import {CartItemVO} from "../../../api/cart/type";
 const route = useRoute();
-const productId = ref();
+const router = useRouter();
 
+const productId = ref();
 // 商品ID
 productId.value = route.params?.id;
 
 // 商品数量
 const productNumber = ref<number>(1);
+// 增加
 const addProductNumber = () => {
   productNumber.value = productNumber.value + 1;
 };
+// 减少
 const reduceProductNumber = () => {
   if (productNumber.value > 1) {
     productNumber.value = productNumber.value - 1;
@@ -262,16 +288,24 @@ const reduceProductNumber = () => {
 };
 
 // 商品详细信息
-const productDetails = ref<productDetailsType>();
+const productDetails = ref<productDetailsType>({
+  detailProductImageList: [],
+  productId: 0,
+  productName: "",
+  productParameterList: [],
+  productPrice: 0,
+  productSalePrice: 0,
+  reviewCount: 0,
+  singleProductImageList: [],
+  totalSales: 0
+});
 
 // 获得商品详细信息
 const doGetDetailedProduct = () => {
   getDetailedProductApi(productId.value).then((res) => {
-
     if (res.code === 0) {
       productDetails.value = res.data;
-      showProductImage.value =
-        productDetails.value?.singleProductImageList[0];
+      showProductImage.value = productDetails.value?.singleProductImageList[0];
     } else {
       ElMessage.error("获取商品信息失败");
     }
@@ -289,37 +323,84 @@ const contextImgKsDisplay = ref("block");
 const contextImgWinSelectorDisplay = ref("none");
 
 // 是否展示J_Details
-const isShowJ_Details = ref<boolean>(true)
+const isShowJ_Details = ref<boolean>(true);
 
 // 获得商品评论
-const reviewPeopleList  = ref<reviewPeople[]>()
+const reviewPeopleList = ref<reviewPeople[]>();
 
 const reviewPeoplePage = ref<pageReviewType>({
   current: 1,
   pageSize: 15,
-  productId:0
-})
+  productId: 0,
+});
 
 const reviewCount = ref<number>(0);
 
-const doGetReviewPeopleList = ()=>{
-  const data = ref<any>()
-  reviewPeoplePage.value.productId = productId.value
-  getPageReviewByProductIdApi(reviewPeoplePage.value).then(res=>{
-    if(res.code===0){
+const pageChange = ()=>{
 
-      data.value = res
-      reviewPeopleList.value = data.value.data.records
-      reviewCount.value =  data.value.date.total
-    }else {
-      console.log("获取评论失败")
+}
+const doGetReviewPeopleList = () => {
+  const data = ref<any>();
+  reviewPeoplePage.value.productId = productId.value;
+  getPageReviewByProductIdApi(reviewPeoplePage.value).then((res) => {
+    if (res.code === 0) {
+      data.value = res;
+      reviewPeopleList.value = data.value.data.records;
+      reviewCount.value = data.value.data.total;
+    } else {
+      console.log("获取评论失败");
+    }
+  });
+};
+
+// 购买商品
+const OnOrderBuy = () => {
+  const data:CartItemVO = {
+    productId: 0,
+    productOrderItemNumber: 0,
+    productSalePrice: 0
+  }
+
+  data.productSalePrice = productDetails.value?.productSalePrice;
+  data.productId = productId.value;
+  data.productOrderItemNumber = productNumber.value;
+
+  addCartItemApi(data).then(res=>{
+    if(res.code===0){
+      router.push({
+        path: "/order/buy",
+        query:{list:res.data,type:2},
+      });
+    }else{
+      ElMessage.error("立即购买失败")
     }
   })
-}
 
-// todo 购买商品
+};
 
-// todo 加入购物车
+// 购物车的信息
+const CartItem = ref<CartItemVO>({
+  productId: 0,
+  productOrderItemNumber: 0,
+  productSalePrice: 0,
+})
+
+// 商品加入购物车
+const OnAddToCart = () => {
+  // 商品数量
+  if(productNumber.value&&productDetails.value?.productId&&productDetails.value?.productSalePrice){
+    CartItem.value.productOrderItemNumber = productNumber.value;
+    CartItem.value.productId = productDetails.value.productId;
+    CartItem.value.productSalePrice = productDetails.value.productSalePrice;
+  }
+  addCartItemApi(CartItem.value).then(res=>{
+    if(res.code===0){
+      ElMessage.success("添加购物车成功")
+    }else{
+      ElMessage.success("添加购物车失败")
+    }
+  })
+};
 
 // 初始化加载
 onMounted(() => {
@@ -327,7 +408,7 @@ onMounted(() => {
   doGetDetailedProduct();
 
   // 加载评论数据
-  doGetReviewPeopleList()
+  doGetReviewPeopleList();
 });
 </script>
 <!--头部样式-->

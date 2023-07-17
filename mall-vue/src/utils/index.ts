@@ -1,10 +1,10 @@
 
 /**
  * 绑定图片
- * 
- * @param imgName 
+ *
+ * @param imgName
  */
-export const bindImg = (imgName: string): string => {
+export const bindImg = (imgName?: string): string => {
     let imgUrl = "http://139.9.51.117:9000/image/mall/img/" + imgName;
     return imgUrl;
 }
@@ -14,7 +14,7 @@ export const bindImg = (imgName: string): string => {
  *
  * @param imgName
  */
-export const bindWebsite = (imgName: string): string => {
+export const bindWebsite = (imgName?: string): string => {
     let imgUrl = "http://139.9.51.117:9000/image/mall/website/" + imgName;
     return imgUrl;
 }

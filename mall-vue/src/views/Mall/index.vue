@@ -2,24 +2,30 @@
   <div class="mall-main">
     <!-- 搜索头部 -->
     <div class="header">
-      <img src="../../assets/images/fore/WebsiteImage/HomeLogoB.png"/>
+      <img src="../../assets/images/fore/WebsiteImage/HomeLogoB.png" />
       <div class="mallSearch">
         <form action="/product" method="get">
           <div class="mallSearch-input">
             <input
-                class="header_search_input"
-                type="text"
-                name="productName"
-                placeholder="搜索 商品/品牌/店铺"
-                maxlength="50"
+              class="header_search_input"
+              type="text"
+              name="productName"
+              placeholder="搜索 商品/品牌/店铺"
+              maxlength="50"
             />
-            <input class="header_search_button" type="submit" value="搜索"/>
+            <input class="header_search_button" type="submit" value="搜索" />
           </div>
         </form>
         <ul>
-          <li v-for="item in categorySearchList" :key="item.categoryId">
-            <a :href="'/product?categoryId='+item.categoryId"
-               :style="item.categoryId%2===0?'color: #FF0036':''">{{ item.categoryName }}</a>
+          <li
+            v-for="(item, index) in categorySearchList"
+            :key="item.categoryId"
+          >
+            <a
+              :href="'/product?categoryId=' + item.categoryId"
+              :style="index % 2 === 0 ? 'color: #FF0036' : ''"
+              >{{ item.categoryName }}</a
+            >
           </li>
         </ul>
       </div>
@@ -28,7 +34,7 @@
     <!--  商品分类  -->
     <div class="home_nav">
       <div class="home_nav_title">
-        <img src="../../assets/images/fore/WebsiteImage/header_nav_title.png"/>
+        <img src="../../assets/images/fore/WebsiteImage/header_nav_title.png" />
         <span>商品分类</span>
       </div>
       <a href="http://vip.mall.com/" target="_blank">Mall会员</a>
@@ -44,214 +50,251 @@
 
     <!--  轮播主体  -->
     <div @mouseleave="categoryLeave()">
-
-
       <!-- 轮播图 -->
       <div class="banner">
         <img
-            src="../../assets/images/fore/WebsiteImage/banner/42.jpg"
-            name="42"
-            id="banner1"
-            style="display: block"
+          src="../../assets/images/fore/WebsiteImage/banner/42.jpg"
+          name="42"
+          id="banner1"
+          :style="bannerIndex===1?'display: block':''"
         />
 
         <img
-            src="../../assets/images/fore/WebsiteImage/banner/43.jpg"
-            name="43"
-            id="banner2"
+          src="../../assets/images/fore/WebsiteImage/banner/43.jpg"
+          name="43"
+          id="banner2"
+          :style="bannerIndex===2?'display: block':''"
+
         />
 
         <img
-            src="../../assets/images/fore/WebsiteImage/banner/44.jpg"
-            name="44"
-            id="banner3"
+          src="../../assets/images/fore/WebsiteImage/banner/44.jpg"
+          name="44"
+          id="banner3"
+          :style="bannerIndex===3?'display: block':''"
+
         />
 
         <img
-            src="../../assets/images/fore/WebsiteImage/banner/45.jpg"
-            name="45"
-            id="banner4"
+          src="../../assets/images/fore/WebsiteImage/banner/45.jpg"
+          name="45"
+          id="banner4"
+          :style="bannerIndex===4?'display: block':''"
+
         />
 
         <img
-            src="../../assets/images/fore/WebsiteImage/banner/46.jpg"
-            name="46"
-            id="banner5"
+          src="../../assets/images/fore/WebsiteImage/banner/46.jpg"
+          name="46"
+          id="banner5"
+          :style="bannerIndex===5?'display: block':''"
+
         />
 
         <img
-            src="../../assets/images/fore/WebsiteImage/banner/47.jpg"
-            name="47"
-            id="banner6"
+          src="../../assets/images/fore/WebsiteImage/banner/47.jpg"
+          name="47"
+          id="banner6"
+          :style="bannerIndex===6?'display: block':''"
+
         />
       </div>
 
       <!-- 侧边分类信息   -->
       <div class="banner_main">
         <ul class="banner_nav">
-
-          <li v-for="item in categorySideList"
-              :key="item.categoryId"
-          >
-            <img :src="bindWebsite('small/'+item.categoryId+'.png')"/>
-            <a href="/product?categoryId=1"
-               @mouseenter="categoryEnter(item.categoryId)">{{ item.categoryName }}</a>
+          <li v-for="item in categorySideList" :key="item.categoryId">
+            <img :src="bindWebsite('small/' + item.categoryId + '.png')" />
+            <a
+              href="/product?categoryId=1"
+              @mouseenter="categoryEnter(item.categoryId)"
+              >{{ item.categoryName }}</a
+            >
             <div class="banner_div" :name="item.categoryName">
-
-            <span v-for="(proName,index) in CategoryProductNameList" :key="proName.productId">
-
-              <router-link :to="'/product/info/'+proName.productId" :style="proName.productIsEnabled===2?'color: blue':''">
-                {{ proName.productTitle }}
-              </router-link>
-              <nav v-show="index%4===0" class="category-product-name-nav"></nav>
-            </span>
-
+              <span
+                v-for="(proName, index) in CategoryProductNameList"
+                :key="proName.productId"
+              >
+                <router-link
+                  :to="'/product/info/' + proName.productId"
+                  :style="
+                    proName.productIsEnabled === 2
+                      ? 'color: blue'
+                      : 'color: black'
+                  "
+                  style="margin-left: 10px"
+                >
+                  {{ proName.productTitle }}
+                </router-link>
+                <nav
+                  v-show="index % 4 === 0"
+                  class="category-product-name-nav"
+                ></nav>
+              </span>
             </div>
           </li>
-
         </ul>
-
 
         <!--  轮播图下方选择条  -->
         <ul class="banner_slider">
-          <li id="slider_1" style="background: rgba(255, 255, 255, 0.4)"></li>
-          <li id="slider_2"></li>
-          <li id="slider_3"></li>
-          <li id="slider_4"></li>
-          <li id="slider_5"></li>
-          <li id="slider_6"></li>
+          <li id="slider_1" :style="bannerIndex ===1?'background: rgba(255, 255, 255, 0.4)':''" @mouseover="bannerChange(1)"></li>
+          <li id="slider_2" :style="bannerIndex ===2?'background: rgba(255, 255, 255, 0.4)':''" @mouseover="bannerChange(2)"></li>
+          <li id="slider_3" :style="bannerIndex ===3?'background: rgba(255, 255, 255, 0.4)':''" @mouseover="bannerChange(3)"></li>
+          <li id="slider_4" :style="bannerIndex ===4?'background: rgba(255, 255, 255, 0.4)':''" @mouseover="bannerChange(4)"></li>
+          <li id="slider_5" :style="bannerIndex ===5?'background: rgba(255, 255, 255, 0.4)':''" @mouseover="bannerChange(5)"></li>
+          <li id="slider_6" :style="bannerIndex ===6?'background: rgba(255, 255, 255, 0.4)':''" @mouseover="bannerChange(6)"></li>
         </ul>
         <a href="#"></a>
       </div>
-
     </div>
 
     <!--  分类得商品信息  -->
     <div class="banner_do">
       <div class="banner_goods">
-
-        <!--    分类下的商品列表    -->
-        <div class="banner_goods_type" v-for="item in categoryHomeMainList" :key="item.categoryId">
+        <!--    分类下的商品信息列表    -->
+        <div
+          class="banner_goods_type"
+          v-for="item in categoryHomeMainList"
+          :key="item.categoryId"
+        >
           <div class="banner_goods_title">
             <span></span>
             <p>{{ item.categoryName }}</p>
           </div>
-          <router-link :to="'/product?categoryId='+item.categoryId"
-          ><img
+          <router-link :to="'/product?categoryId=' + item.categoryId"
+            ><img
               class="banner_goods_show"
-              :src="bindWebsite('show/'+item.categoryId+'.jpg')"
+              :src="bindWebsite('show/' + item.categoryId + '.jpg')"
           /></router-link>
 
           <!-- 分类下的商品列表 -->
           <div class="banner_goods_items">
-
-            <div class="banner_goods_item" v-for="product in item.categoryHomeProductVOList" :key="product.productId">
-              <router-link :to="'product/info/'+product.productId" class="goods_link"></router-link>
-              <img
-                  :src="bindImg(product.singleProductImageList[0])"
-              />
-              <router-link :to="'product/info/'+product.productId" class="goods_name"
-              >{{ product.productName }}</router-link
+            <div
+              class="banner_goods_item"
+              v-for="product in item.categoryHomeProductVOList"
+              :key="product.productId"
+            >
+              <router-link
+                :to="'product/info/' + product.productId"
+                class="goods_link"
+              ></router-link>
+              <img :src="bindImg(product.singleProductImageList[0])" />
+              <router-link
+                :to="'product/info/' + product.productId"
+                class="goods_name"
+                >{{ product.productName }}</router-link
               >
               <span class="goods_price">￥{{ product.productSalePrice }}</span>
             </div>
           </div>
         </div>
-
       </div>
-
 
       <div class="endDiv"></div>
     </div>
   </div>
-
-
 </template>
 
 <script setup lang="ts">
-import {categoryHomeMainType, categoryProductNameType, categoryType} from "../../api/category/type";
-import {getCategoryListApi, getHomeProductApi, getProductListByCategoryIdApi} from "../../api/category";
-import {bindWebsite, bindImg} from "../../utils"
+import {
+  categoryHomeMainType,
+  categoryProductNameType,
+  categoryType,
+} from "../../api/category/type";
+import {
+  getCategoryListApi,
+  getHomeProductApi,
+  getProductListByCategoryIdApi,
+} from "../../api/category";
+import { bindWebsite, bindImg } from "../../utils";
 
-const isShowBannerDiv = ref<string>("none")
+// 轮播图
+const bannerIndex = ref<number>(1);
+const bannerChange = (index:number) => {
+  bannerIndex.value = index;
+}
+const bannerTimeoutShow = ()=>{
+  bannerIndex.value = (bannerIndex.value+1)%6+1;
+  setTimeout(()=>{
+    bannerTimeoutShow()
+  },3000)
+}
+bannerTimeoutShow()
 
 
-const categoryHomeMainList = ref<categoryHomeMainType[]>()
+
+const isShowBannerDiv = ref<string>("none");
+
+const categoryHomeMainList = ref<categoryHomeMainType[]>();
 
 // 获得主体列表
 const doGetCategoryHomeMainList = () => {
-  getHomeProductApi().then(res => {
-    console.log(res)
+  getHomeProductApi().then((res) => {
+    console.log(res);
     if (res.code === 0) {
       categoryHomeMainList.value = res.data;
     } else {
-      ElMessage.error("获得分类下商品列表失败" + res.message)
+      ElMessage.error("获得分类下商品列表失败" + res.message);
     }
-  })
-}
-
-
+  });
+};
 
 // 搜索头部分类列表
-const categorySearchList = ref<categoryType>()
+const categorySearchList = ref<categoryType>();
 
 // 搜索左侧分类表
-const categorySideList = ref<categoryType>()
+const categorySideList = ref<categoryType>();
 
 // 分类下的商品名列表（鼠标划过侧边分类显示）
-const CategoryProductNameList = ref<categoryProductNameType[]>()
+const CategoryProductNameList = ref<categoryProductNameType[]>();
 
 // 进入分类
 const categoryEnter = (id: number) => {
-  isShowBannerDiv.value = "block"
-  getProductListByCategoryIdApi(id).then(res => {
+  isShowBannerDiv.value = "block";
+  getProductListByCategoryIdApi(id).then((res) => {
     if (res.code === 0) {
       CategoryProductNameList.value = res.data;
     } else {
-      console.log("获取分类下的商品信息失败")
+      console.log("获取分类下的商品信息失败");
     }
-  })
-  console.log(id)
-}
+  });
+  console.log(id);
+};
 
 // 离开分类
 const categoryLeave = () => {
-  isShowBannerDiv.value = "none"
-}
-
+  isShowBannerDiv.value = "none";
+};
 
 // 获得分类列表
 const doGetCategory = () => {
-  getCategoryListApi(1).then(res => {
-    console.log(res)
+  getCategoryListApi(1).then((res) => {
+    console.log(res);
     if (res.code === 0) {
       categorySearchList.value = res.data;
     } else {
-      ElMessage.error(res.message)
+      ElMessage.error(res.message);
     }
-  })
-  getCategoryListApi(2).then(res => {
+  });
+  getCategoryListApi(2).then((res) => {
     if (res.code === 0) {
       categorySideList.value = res.data;
     } else {
-      ElMessage.error(res.message)
+      ElMessage.error(res.message);
     }
-  })
-}
+  });
+};
 
-
-onMounted(()=>{
+onMounted(() => {
   // 获得列表
-  doGetCategoryHomeMainList()
+  doGetCategoryHomeMainList();
   // 获得分类
-  doGetCategory()
-})
-
+  doGetCategory();
+});
 </script>
 
 <style scoped>
-
-.category-product-name-nav{
+.category-product-name-nav {
   margin-top: 5px;
   margin-bottom: 5px;
   border-bottom-color: rgba(62, 62, 62, 0.13);
@@ -268,7 +311,6 @@ nav {
   width: 1270px;
   height: 130px;
   margin: auto;
-
 }
 
 .header > img {

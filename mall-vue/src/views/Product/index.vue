@@ -6,20 +6,20 @@
     <div class="context" v-show="!isProductNull">
       <div class="context_menu">
         <ul data-type="1">
-          <li data-name="productName" class="orderBySelect">
-            <span>综合</span>
-            <span class="orderByAsc"></span>
+          <li data-name="productSalePrice" @click="dobaseSearch">
+            <span style="position: relative; left: 3px">综合</span>
           </li>
-
-          <li data-name="productCreateDate">
-            <span>新品</span>
-            <span class="orderByAsc"></span>
-          </li>
-
-          <li data-name="productSalePrice">
+          <!-- 根据价格 -->
+          <li data-name="productSalePrice" @click="doProductSalePriceSort()">
             <span style="position: relative; left: 3px">价格</span>
-            <span class="orderByAsc"></span>
-
+            <span
+              class="orderByAsc"
+              v-if="productSalePriceOrderBy === 'desc'"
+            ></span>
+            <span
+              class="orderByDesc"
+              v-if="productSalePriceOrderBy === 'asc'"
+            ></span>
           </li>
         </ul>
       </div>
@@ -46,12 +46,12 @@
               <span>¥</span>{{ item.productSalePrice }}
             </p>
             <p class="context_product_name">
-              <router-link :to="'/mall/product/' + item.productId" >{{
+              <router-link :to="'/mall/product/' + item.productId">{{
                 item.productName
               }}</router-link>
             </p>
             <p class="context_product_shop">
-              <span>贤趣女装 /大衣旗舰店</span>
+              <span>{{ item.categoryName }}旗舰店</span>
             </p>
             <p class="context_product_status">
               <span class="status_left"
@@ -69,13 +69,13 @@
         </div>
       </div>
       <el-pagination
-          background
-          v-model:current-page="searchQuery.current"
-          :page-size="15"
-          layout="prev, pager, next"
-          v-model:total="pageTotal"
-          @current-change="currentChange"
-          class="el-page"
+        background
+        v-model:current-page="searchQuery.current"
+        :page-size="15"
+        layout="prev, pager, next"
+        v-model:total="pageTotal"
+        @current-change="currentChange"
+        class="el-page"
       />
     </div>
 
@@ -110,21 +110,21 @@
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { productSearchApi } from "../../api/product";
+import { getProductByCategoryIdApi, productSearchApi } from "../../api/product";
 import { bindImg } from "../../utils";
-import {productSearchRequest} from "../../api/product/type";
+import { productSearchRequest } from "../../api/product/type";
 const route = useRoute();
 const isProductNull = ref<boolean>(true);
 
 // 获得查询参数
 const productName = ref<any>();
+const categoryId = ref<any>();
+categoryId.value = route.query?.categoryId;
 productName.value = route.query?.productName;
-
 
 const searchQuery = ref<productSearchRequest>({
   current: 1,
   pageSize: 15,
-  productName: "",
   sortField: undefined,
   sortOrder: undefined,
 });
@@ -132,10 +132,9 @@ const searchQuery = ref<productSearchRequest>({
 const pageTotal = ref<number>(0);
 
 // 分页响应
-const currentChange = ()=>{
+const currentChange = () => {
   doSearch();
-}
-
+};
 
 interface productInfo {
   productId: number;
@@ -145,17 +144,45 @@ interface productInfo {
   productSalePrice: number;
   reviewCount: number;
   totalTransactionCount: number;
+  categoryName: string;
 }
 
-// 排序
-const doSort = ()=>{
+// 价格排序
+const productSalePriceOrderBy = ref<string>("desc");
+
+// 价格排序
+const doProductSalePriceSort = () => {
+  if (productSalePriceOrderBy.value === "desc") {
+    productSalePriceOrderBy.value = "asc";
+  } else {
+    productSalePriceOrderBy.value = "desc";
+  }
+
+  searchQuery.value.sortField = "ProductSalePrice";
+  searchQuery.value.sortOrder = productSalePriceOrderBy.value;
   doSearch();
-}
+};
+
+// 点击综合查询
+const dobaseSearch = () => {
+  searchQuery.value.sortField = undefined;
+  searchQuery.value.sortOrder = undefined;
+  doSearch();
+};
 
 const productList = ref<productInfo[]>();
 
 // 进行搜索
 const doSearch = () => {
+  if (!(productName.value == undefined)) {
+    doSearchByProductName();
+  } else if (!(categoryId.value == undefined)) {
+    doSearchByCategoryId();
+  }
+};
+
+// 通过商品名进行搜索
+const doSearchByProductName = () => {
   searchQuery.value.productName = productName.value;
   productSearchApi(searchQuery.value).then((res) => {
     console.log(res);
@@ -174,14 +201,35 @@ const doSearch = () => {
   });
 };
 
-onMounted(()=>{
-  doSearch()
-})
-doSearch();
+// 通过分类进行搜索进行搜索
+const doSearchByCategoryId = () => {
+  searchQuery.value.categoryId = categoryId.value;
+  searchQuery.value.productName = undefined;
+  getProductByCategoryIdApi(searchQuery.value).then((res) => {
+    console.log(res);
+    if (res.code === 0) {
+      console.log("请求成功");
+      isProductNull.value = false;
+      productList.value = res.data.list;
+      pageTotal.value = res.data.total;
+      if (productList.value?.length === 0) {
+        isProductNull.value = true;
+      }
+    } else {
+      isProductNull.value = true;
+      ElMessage.error("获取商品数据失败");
+    }
+  });
+};
+
+// 挂载初始化
+onMounted(() => {
+  doSearch();
+});
 </script>
 
 <style scoped>
-.el-page{
+.el-page {
   margin-left: 150px;
   margin-bottom: 30px;
 }

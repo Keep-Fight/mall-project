@@ -1,27 +1,37 @@
 <template>
   <Search title="我的订单" :is-show-li="true" isSHowSearch="true" />
   <div class="content">
-    <el-tabs v-model="activeName" class="content-tabs" @tab-click="handleClick">
-      <el-tab-pane label="所有订单" name="first" lazy
-        ><OrderList
+    <el-tabs v-model="activeName" class="content-tabs" >
+
+      <el-tab-pane label="所有订单" :name="1" >
+        <OrderList :status="-1"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="待付款" :name="2" lazy
+        ><OrderList :status="0"
       /></el-tab-pane>
-      <el-tab-pane label="待付款" name="second" lazy><OrderList /></el-tab-pane>
-      <el-tab-pane label="待发货" name="third" lazy><OrderList /></el-tab-pane>
-      <el-tab-pane label="待收货" name="fourth" lazy><OrderList /></el-tab-pane>
-      <el-tab-pane label="已收货" name="five" lazy><OrderList /></el-tab-pane>
+      <el-tab-pane label="待发货" :name="3" lazy
+        ><OrderList :status="1"
+      /></el-tab-pane>
+      <el-tab-pane label="待收货" :name="4" lazy
+        ><OrderList :status="2"
+      /></el-tab-pane>
+      <el-tab-pane label="已完成" :name="5" lazy
+        ><OrderList :status="3"
+      /></el-tab-pane>
+
+
     </el-tabs>
   </div>
 </template>
 
 <script setup lang="ts">
+// @ts-ignore
 import OrderList from "./components/OrderList.vue";
 import { ref } from "vue";
 
-const activeName = ref("first");
+const activeName = ref<number>(1);
 
-const handleClick = (tab: any, event: Event) => {
-  console.log(tab, event);
-};
 </script>
 
 <style lang="scss" scoped>
