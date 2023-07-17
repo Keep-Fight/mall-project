@@ -10,12 +10,16 @@ import com.lt.common.ResultUtils;
 import com.lt.dto.order.AddOrderDTO;
 import com.lt.dto.order.AddOrderItemDTO;
 import com.lt.dto.order.UpdateOrderDTO;
+import com.lt.entity.ProductOrder;
 import com.lt.exception.BusinessException;
 import com.lt.service.ProductOrderService;
+import com.lt.vo.order.ProductOrderTimeVO;
 import com.lt.vo.order.ProductOrderVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -29,6 +33,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/order")
 @Api(tags = "商品订单控制器")
+@Slf4j
 public class ProductOrderController {
     @Resource
     private ProductOrderService productOrderService;
@@ -69,7 +74,7 @@ public class ProductOrderController {
 
     @PostMapping("/addOrder")
     @ApiOperation("添加订单")
-    public BaseResponse<Boolean> addOrder(@RequestBody AddOrderDTO addOrderDTO) {
+    public BaseResponse<Integer> addOrder(@RequestBody AddOrderDTO addOrderDTO) {
         if (addOrderDTO == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -84,7 +89,22 @@ public class ProductOrderController {
         if (CollectionUtil.isEmpty(addOrderItemDTOList)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "暂无订单数据，无法提交订单");
         }
-        productOrderService.addOrder(addOrderDTO);
-        return ResultUtils.success(true);
+        Integer productOrderId = productOrderService.addOrder(addOrderDTO);
+        return ResultUtils.success(productOrderId);
+    }
+
+    @GetMapping("/getOrderTime")
+    @ApiOperation("根据订单id获取订单的时间信息")
+    public BaseResponse<ProductOrderTimeVO> getOrderTime(@RequestParam("productOrderId") Integer productOrderId) {
+        if (productOrderId == null || productOrderId <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        ProductOrder productOrder = productOrderService.getById(productOrderId);
+        if (productOrder == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "该订单不存在");
+        }
+        ProductOrderTimeVO productOrderTimeVO = new ProductOrderTimeVO();
+        BeanUtils.copyProperties(productOrder, productOrderTimeVO);
+        return ResultUtils.success(productOrderTimeVO);
     }
 }
